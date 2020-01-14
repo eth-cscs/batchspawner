@@ -439,8 +439,27 @@ class BatchSpawnerBase(Spawner):
     async def progress(self):
         while True:
             if self.state_ispending():
+                pending_reasons = {'Priority'        :'One or more higher priority jobs exist for this partition.',
+                                   'Resources'       :'The job is waiting for resources to become available.',
+                                   'Reservation'     :'The job is waiting for its advanced reservation to become available.',
+                                   'TimeLimit'       :'The job exhausted its time limit.',
+                                   'ReqNodeNotAvail' :'Some node specifically required by the job is not currently available.',
+                                   'NodeDown'        :'A node required by the job is down.',
+                                   'JobLaunchFailure':'The job could not be launched.  This may be due to a file system problem, invalid program name, etc.'}
+                subvars = self.get_req_subvars()
+                subvars['job_id'] = self.job_id
+                cmd = format_template(self.batch_reason_cmd, **subvars)
+                self.log.debug('Spawner querying pending reason: ' + cmd)
+                try:
+                    out = await self.run_command(cmd)
+                    self.log.debug('Job pending reason code: ' + out)
+                    reason = pending_reasons[out.strip()]
+                except Exception as e:
+                    self.log.warning('Cannot get reason for pending in queue for job ' + self.job_id)
+                    reason = '(see logs for more details)'
+
                 await yield_({
-                    "message": "Pending in queue...",
+                    "message": "Pending in queue..."+reason,
                 })
             elif self.state_isrunning():
                 await yield_({
@@ -659,6 +678,7 @@ echo "jupyterhub-singleuser ended gracefully"
     # outputs status and exec node like "RUNNING hostname"
     batch_query_cmd = Unicode("squeue -h -j {job_id} -o '%T %B'").tag(config=True) #
     batch_cancel_cmd = Unicode('scancel {job_id}').tag(config=True)
+    batch_reason_cmd = Unicode("squeue -h -j {job_id} -o '%r'").tag(config=True)
     # use long-form states: PENDING,  CONFIGURING = pending
     #  RUNNING,  COMPLETING = running
     state_pending_re = Unicode(r'^(?:PENDING|CONFIGURING)').tag(config=True)
