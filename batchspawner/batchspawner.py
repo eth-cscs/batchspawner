@@ -445,7 +445,9 @@ class BatchSpawnerBase(Spawner):
                                    'TimeLimit'       :'The job exhausted its time limit.',
                                    'ReqNodeNotAvail' :'Some node specifically required by the job is not currently available.',
                                    'NodeDown'        :'A node required by the job is down.',
-                                   'JobLaunchFailure':'The job could not be launched.  This may be due to a file system problem, invalid program name, etc.'}
+                                   'JobLaunchFailure':'The job could not be launched.  This may be due to a file system problem, invalid program name, etc.',
+                                   'Nodes_required_for_job_are_DOWN,_DRAINED_or_reserved_for_jobs_in_higher_priority_partitions':'The job is waiting for resources to become available.'
+                                  }
                 subvars = self.get_req_subvars()
                 subvars['job_id'] = self.job_id
                 cmd = format_template(self.batch_reason_cmd, **subvars)
@@ -463,7 +465,7 @@ class BatchSpawnerBase(Spawner):
                 })
             elif self.state_isrunning():
                 await yield_({
-                    "message": "Cluster job running... waiting to connect",
+                    "message": "Job running... waiting to connect",
                 })
                 return
             else:
