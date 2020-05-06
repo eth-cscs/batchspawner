@@ -430,7 +430,7 @@ class BatchSpawnerBase(Spawner):
                                    'ReqNodeNotAvail' :'Some node specifically required by the job is not currently available.',
                                    'NodeDown'        :'A node required by the job is down.',
                                    'JobLaunchFailure':'The job could not be launched.  This may be due to a file system problem, invalid program name, etc.',
-                                   'Nodes_required_for_job_are_DOWN,_DRAINED_or_reserved_for_jobs_in_higher_priority_partitions':'The job is waiting for resources to become available.'
+                                   'Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions':'The job is waiting for resources to become available.'
                                   }
                 subvars = self.get_req_subvars()
                 subvars['job_id'] = self.job_id
