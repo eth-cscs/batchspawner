@@ -429,6 +429,7 @@ class BatchSpawnerBase(Spawner):
                                    'TimeLimit'       :'The job exhausted its time limit.',
                                    'ReqNodeNotAvail' :'Some node specifically required by the job is not currently available.',
                                    'NodeDown'        :'A node required by the job is down.',
+                                   'None'            :'',
                                    'JobLaunchFailure':'The job could not be launched.  This may be due to a file system problem, invalid program name, etc.',
                                    'Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions':'The job is waiting for resources to become available.'
                                   }
