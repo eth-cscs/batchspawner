@@ -466,7 +466,7 @@ class BatchSpawnerBase(Spawner):
                 })
             elif self.state_isrunning():
                 await yield_({
-                    "message": "Job running... waiting to connect",
+                    "message": "Job running... If the server fails to start in a few moments, check the Slurm log file for possible reasons: $SCRATCH/jupyterhub_slurmspawner_" +self.job_id +".log",
                 })
                 return
             else:
